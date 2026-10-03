@@ -1,0 +1,13 @@
+[package]
+name = "metaweave"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.102"
+clap = { version = "4.6.1", features = ["derive"] }
+colored = "3.1.1"
+comfy-table = "7.2.2"
+reqwest = "0.13.3"
+scraper = "0.27.0"
+tokio = { version = "1.52.3", features = ["macros", "rt-multi-thread"] }
