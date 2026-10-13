@@ -1,16 +1,905 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A Rust library for fetching and processing web content.">
-    <title>Document</title>
+<!doctype html>
+<html lang="en" style="color-scheme: dark light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>metaweave — check your website before it ships</title>
+    <meta
+      name="description"
+      content="metaweave is a fast command-line tool that checks SEO, social previews, accessibility, performance, security and broken links before you deploy."
+    />
+    <link rel="canonical" href="https://nazimcanislam.github.io/metaweave/" />
+    <meta name="theme-color" content="#4536d0" />
 
-    <meta property="og:title" content="Document">
-    <meta property="og:description" content="A Rust library for fetching and processing web content.">
-    <meta property="og:image" content="">
-</head>
-<body>
-    Merhaba
-</body>
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="metaweave" />
+    <meta
+      property="og:title"
+      content="metaweave — check your website before it ships"
+    />
+    <meta
+      property="og:description"
+      content="One command, 70+ pre-production checks: Open Graph, favicons, robots.txt, sitemap, security headers, accessibility, broken links and more."
+    />
+    <meta
+      property="og:url"
+      content="https://nazimcanislam.github.io/metaweave/"
+    />
+    <meta
+      property="og:image"
+      content="https://nazimcanislam.github.io/metaweave/og.png"
+    />
+    <meta
+      property="og:image:alt"
+      content="The metaweave logo next to the text “Check your website before it ships”."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+    <link rel="manifest" href="site.webmanifest" />
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "metaweave",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Linux, macOS, Windows",
+        "description": "A command-line tool that checks websites for SEO, social preview, accessibility, performance and security problems before launch.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+  </head>
+
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap bar">
+        <a class="brand" href="." aria-label="metaweave, back to top">
+          <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+            <rect width="32" height="32" rx="8" fill="var(--accent)" />
+            <path
+              d="M6 10h20M6 16h20M6 22h20"
+              stroke="var(--accent-ink)"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              opacity=".45"
+            />
+            <path
+              d="M11 6v20M21 6v20"
+              stroke="var(--accent-ink)"
+              stroke-width="2.2"
+              stroke-linecap="round"
+            />
+            <path
+              d="M6 16h5m10 0h5"
+              stroke="var(--accent-ink)"
+              stroke-width="2.2"
+              stroke-linecap="round"
+            />
+          </svg>
+          metaweave
+        </a>
+        <nav class="nav" aria-label="Sections">
+          <a href="#install">Install</a>
+          <a href="#usage">Usage</a>
+          <a href="#checks">Checks</a>
+          <a href="#ci">CI</a>
+        </nav>
+        <fieldset class="theme">
+          <legend>Color theme</legend>
+          <input type="radio" name="theme" id="theme-auto" checked />
+          <label for="theme-auto">Auto</label>
+          <input type="radio" name="theme" id="theme-light" />
+          <label for="theme-light">Light</label>
+          <input type="radio" name="theme" id="theme-dark" />
+          <label for="theme-dark">Dark</label>
+        </fieldset>
+      </div>
+    </header>
+
+    <main id="main">
+      <div id="top" class="hero">
+        <div class="wrap">
+          <div>
+            <h1>Find what Lighthouse misses before your users do.</h1>
+            <p class="lead">
+              metaweave checks the things you usually discover after deploying:
+              a missing og:image, a favicon that 404s, a leftover
+              <code>noindex</code>, a robots.txt that blocks everything. One
+              command, <span data-total>71</span> checks, plain-language fixes.
+            </p>
+            <div class="cta">
+              <a class="btn primary" href="#install">Install metaweave</a>
+              <a
+                class="btn ghost"
+                href="https://github.com/nazimcanislam/metaweave"
+                >View on GitHub</a
+              >
+            </div>
+          </div>
+
+          <div
+            class="term"
+            role="img"
+            aria-label="Terminal showing metaweave reporting two errors and two warnings for a staging site"
+          >
+            <div class="term-bar">
+              <span class="dot"></span><span class="dot"></span
+              ><span class="dot"></span
+              ><span class="term-title">~/my-site</span>
+            </div>
+            <pre
+              aria-hidden="true"
+            ><span class="p">$</span> <span class="b">metaweave</span> staging.example.com
+
+  <span class="m">▸</span> <span class="b">https://staging.example.com/</span>
+    <span class="d">HTTP 200 · 212 ms to first byte · 18.4 KB</span>
+
+  <span class="b">Social previews</span>      <span class="y">██████████████░░░░░░</span>  <span class="y">70</span>  <span class="d">6/10 passed</span>
+    <span class="r">✖</span> <span class="d">social/og-image</span>       og:image returns HTTP 404
+        <span class="c">→ Make sure the file is deployed, publicly accessible…</span>
+    <span class="y">▲</span> <span class="d">social/twitter-card</span>   Missing twitter:card
+
+  <span class="b">Site files &amp; icons</span>   <span class="r">████████████░░░░░░░░</span>  <span class="r">62</span>  <span class="d">3/7 passed</span>
+    <span class="r">✖</span> <span class="d">assets/robots-txt</span>     robots.txt disallows the entire site
+        <span class="c">→ Never Disallow: / in production.</span>
+    <span class="r">✖</span> <span class="d">assets/favicon</span>        The declared favicon cannot be loaded
+    <span class="y">▲</span> <span class="d">assets/sitemap</span>        3 URLs use a different host
+
+  <span class="d">────────────────────────────────────────────────</span>
+  <span class="g">51 passed</span> · <span class="r">3 errors</span> · <span class="y">3 warnings</span> · <span class="u">4 info</span>
+  <span class="r"><b>Not ready to ship — fix 3 errors.</b></span>   <span class="y"><b>Score 82/100</b></span></pre>
+          </div>
+        </div>
+      </div>
+
+      <section aria-labelledby="why">
+        <div class="wrap">
+          <h2 id="why">Built for the checks nobody remembers</h2>
+          <div class="why">
+            <p>
+              <strong>Beyond Lighthouse</strong>Lighthouse is great at speed and
+              basic SEO. It will not tell you that your share image is 404, your
+              canonical points at localhost or your sitemap lists the staging
+              domain.
+            </p>
+            <p>
+              <strong>Before production</strong>Point it at
+              <code>localhost:3000</code> or a preview deploy. Checks that only
+              make sense on a live site are skipped for local servers, so you
+              don't get noise.
+            </p>
+            <p>
+              <strong>Fixes, not just flags</strong>Every finding says what is
+              wrong and how to fix it. <code>metaweave explain</code> tells you
+              why the check exists.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="install" aria-labelledby="install-h">
+        <div class="wrap split">
+          <div>
+            <h2 id="install-h">Install</h2>
+          </div>
+          <div>
+            <p>
+              metaweave is a single binary written in Rust. You need
+              <a href="https://rustup.rs">Rust 1.85 or newer</a>.
+            </p>
+            <pre
+              class="code"
+            ><code><span class="c"># install straight from GitHub</span>
+cargo install --git https://github.com/nazimcanislam/metaweave
+
+<span class="c"># or build from a clone</span>
+git clone https://github.com/nazimcanislam/metaweave
+cd metaweave
+cargo install --path .</code></pre>
+            <p class="muted">
+              Shell completions: <code>metaweave completions bash</code> (also
+              zsh, fish, powershell, elvish).
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="usage" aria-labelledby="usage-h">
+        <div class="wrap split">
+          <div>
+            <h2 id="usage-h">Usage</h2>
+          </div>
+          <div>
+            <pre
+              class="code"
+            ><code><span class="c"># check a live page, or your dev server (http is assumed for localhost)</span>
+metaweave https://example.com
+metaweave localhost:3000
+
+<span class="c"># several pages in one run; site-wide checks run once per origin</span>
+metaweave example.com example.com/pricing example.com/blog
+
+<span class="c"># focus on some areas, or silence checks you don't care about</span>
+metaweave example.com --only seo,social,assets
+metaweave example.com --skip links --ignore 'sec/*' -i seo/h1
+
+<span class="c"># learn about a check</span>
+metaweave explain og-image</code></pre>
+
+            <h3>Options</h3>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Option</th>
+                    <th scope="col">What it does</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><code>-f, --format</code></td>
+                    <td>
+                      <code>text</code> (default), <code>json</code> or
+                      <code>markdown</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>--only</code> / <code>--skip</code></td>
+                    <td>
+                      Comma-separated categories: <code>seo</code>,
+                      <code>social</code>, <code>a11y</code>, <code>perf</code>,
+                      <code>sec</code>, <code>assets</code>, <code>links</code>,
+                      <code>html</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>-i, --ignore</code></td>
+                    <td>
+                      Silence checks by id; prefixes like
+                      <code>sec/*</code> work
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>--fail-on</code></td>
+                    <td>
+                      Exit with 1 at this severity or above:
+                      <code>error</code> (default), <code>warning</code>,
+                      <code>info</code>, <code>never</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>--max-links</code></td>
+                    <td>How many links to verify (default 100)</td>
+                  </tr>
+                  <tr>
+                    <td><code>--timeout</code></td>
+                    <td>Per-request timeout in seconds (default 15)</td>
+                  </tr>
+                  <tr>
+                    <td><code>--insecure</code></td>
+                    <td>
+                      Accept self-signed certificates on dev or staging servers
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><code>-v</code> / <code>-q</code></td>
+                    <td>List passed checks / show only errors and warnings</td>
+                  </tr>
+                  <tr>
+                    <td><code>--no-color</code></td>
+                    <td>
+                      Plain output; <code>NO_COLOR</code> is respected too
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h3>Exit codes</h3>
+            <p>
+              <code>0</code> nothing at or above <code>--fail-on</code> ·
+              <code>1</code> findings at or above it · <code>2</code> a page
+              could not be fetched or an argument was invalid.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="checks" aria-labelledby="checks-h">
+        <div class="wrap split">
+          <div>
+            <h2 id="checks-h">What it checks</h2>
+          </div>
+          <div>
+            <p>
+              <span data-total>71</span> checks in eight categories. Each has an
+              id you can pass to <code>--ignore</code> or
+              <code>metaweave explain</code>. Checks that need extra requests
+              (icons, robots.txt, links…) run in parallel.
+            </p>
+            <!-- checks:start -->
+            <details class="cat">
+              <summary>SEO<span class="n">8 checks</span></summary>
+              <dl>
+                <dt>seo/title</dt>
+                <dd>
+                  Document has a &lt;title&gt; of a sensible length (10–60
+                  chars)<small
+                    >The title is the headline in search results and browser
+                    tabs; long titles get truncated.</small
+                  >
+                </dd>
+                <dt>seo/description</dt>
+                <dd>
+                  Meta description is present and 50–160 chars<small
+                    >Search engines use it as the result snippet; auto-generated
+                    ones are often poor.</small
+                  >
+                </dd>
+                <dt>seo/canonical</dt>
+                <dd>
+                  Canonical URL is declared, absolute and points at the right
+                  host<small
+                    >Prevents duplicate content and stops localhost/staging URLs
+                    from leaking into search.</small
+                  >
+                </dd>
+                <dt>seo/h1</dt>
+                <dd>
+                  Page has exactly one &lt;h1&gt;<small
+                    >The h1 tells users and crawlers what the page is
+                    about.</small
+                  >
+                </dd>
+                <dt>seo/indexable</dt>
+                <dd>
+                  Page is not blocked from indexing (noindex)<small
+                    >A leftover noindex from staging silently removes the page
+                    from search results.</small
+                  >
+                </dd>
+                <dt>seo/structured-data</dt>
+                <dd>
+                  JSON-LD structured data is present and valid JSON<small
+                    >Structured data enables rich results (breadcrumbs,
+                    articles, products, FAQs).</small
+                  >
+                </dd>
+                <dt>seo/viewport</dt>
+                <dd>
+                  Responsive viewport meta tag is set<small
+                    >Without it mobile browsers render a zoomed-out desktop
+                    page; Google indexes mobile-first.</small
+                  >
+                </dd>
+                <dt>seo/link-text</dt>
+                <dd>
+                  Links use descriptive text (no “click here”)<small
+                    >Generic link text carries no meaning for crawlers or
+                    screen-reader users.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat" open>
+              <summary>Social previews<span class="n">10 checks</span></summary>
+              <dl>
+                <dt>social/og-title</dt>
+                <dd>
+                  og:title is set<small
+                    >It is the headline of link previews on Facebook, LinkedIn,
+                    Slack, WhatsApp, Discord…</small
+                  >
+                </dd>
+                <dt>social/og-description</dt>
+                <dd>
+                  og:description is set<small
+                    >It provides the preview text shown under the title.</small
+                  >
+                </dd>
+                <dt>social/og-image</dt>
+                <dd>
+                  og:image is set to an absolute, public URL<small
+                    >Posts without an image get far less attention; relative or
+                    localhost URLs can&#x27;t be fetched by crawlers.</small
+                  >
+                </dd>
+                <dt>social/og-image-alt</dt>
+                <dd>
+                  og:image:alt describes the preview image<small
+                    >Alt text makes link previews accessible on platforms that
+                    support it.</small
+                  >
+                </dd>
+                <dt>social/og-url</dt>
+                <dd>
+                  og:url is set and matches the canonical URL<small
+                    >It tells platforms which URL to attribute likes and shares
+                    to.</small
+                  >
+                </dd>
+                <dt>social/og-type</dt>
+                <dd>
+                  og:type is set<small
+                    >It defines how the page is represented (website, article,
+                    product…).</small
+                  >
+                </dd>
+                <dt>social/og-site-name</dt>
+                <dd>
+                  og:site_name is set<small
+                    >It shows the brand name next to the preview on some
+                    platforms.</small
+                  >
+                </dd>
+                <dt>social/og-image-reachable</dt>
+                <dd>
+                  og:image URL is reachable and is an image<small
+                    >A 404 or HTML response means the preview card silently has
+                    no picture.</small
+                  >
+                </dd>
+                <dt>social/og-image-size</dt>
+                <dd>
+                  og:image has a suitable format and size (1200×630
+                  recommended)<small
+                    >Small or oddly shaped images are cropped, blurry or
+                    ignored; SVG is unsupported.</small
+                  >
+                </dd>
+                <dt>social/twitter-card</dt>
+                <dd>
+                  twitter:card is set to a valid value<small
+                    >X/Twitter needs twitter:card to render a rich preview;
+                    other tags fall back to Open Graph.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat">
+              <summary>Accessibility<span class="n">13 checks</span></summary>
+              <dl>
+                <dt>a11y/lang</dt>
+                <dd>
+                  &lt;html&gt; has a valid lang attribute<small
+                    >Screen readers pick pronunciation rules from it; browsers
+                    use it for translation and hyphenation.</small
+                  >
+                </dd>
+                <dt>a11y/img-alt</dt>
+                <dd>
+                  Every &lt;img&gt; has an alt attribute<small
+                    >Without alt, screen readers read out the file name and
+                    blind users miss the content.</small
+                  >
+                </dd>
+                <dt>a11y/link-name</dt>
+                <dd>
+                  Every link has an accessible name<small
+                    >Icon-only or empty links are announced as just
+                    “link”.</small
+                  >
+                </dd>
+                <dt>a11y/button-name</dt>
+                <dd>
+                  Every button has an accessible name<small
+                    >Unlabelled buttons are unusable with a screen
+                    reader.</small
+                  >
+                </dd>
+                <dt>a11y/form-label</dt>
+                <dd>
+                  Every form field has a label<small
+                    >Placeholders disappear and are not labels; unlabelled
+                    fields can&#x27;t be identified by assistive tech.</small
+                  >
+                </dd>
+                <dt>a11y/heading-order</dt>
+                <dd>
+                  Headings are non-empty and do not skip levels<small
+                    >Screen-reader users navigate by headings; skipped levels
+                    break the outline.</small
+                  >
+                </dd>
+                <dt>a11y/viewport-zoom</dt>
+                <dd>
+                  Pinch-zoom is not disabled<small
+                    >Users with low vision rely on zooming.</small
+                  >
+                </dd>
+                <dt>a11y/duplicate-id</dt>
+                <dd>
+                  id attributes are unique<small
+                    >Duplicate ids break label associations, anchors and ARIA
+                    references.</small
+                  >
+                </dd>
+                <dt>a11y/landmarks</dt>
+                <dd>
+                  Page has a &lt;main&gt; landmark<small
+                    >Landmarks let assistive-tech users jump straight to the
+                    content.</small
+                  >
+                </dd>
+                <dt>a11y/iframe-title</dt>
+                <dd>
+                  Every &lt;iframe&gt; has a title<small
+                    >The title tells screen-reader users what the frame
+                    contains.</small
+                  >
+                </dd>
+                <dt>a11y/video-captions</dt>
+                <dd>
+                  Videos provide captions or subtitles<small
+                    >Deaf and hard-of-hearing users need captions (WCAG
+                    1.2.2).</small
+                  >
+                </dd>
+                <dt>a11y/tabindex</dt>
+                <dd>
+                  No positive tabindex values<small
+                    >Positive tabindex overrides the natural focus order and
+                    confuses keyboard users.</small
+                  >
+                </dd>
+                <dt>a11y/skip-link</dt>
+                <dd>
+                  A “skip to content” link is available<small
+                    >Keyboard users otherwise tab through the whole navigation
+                    on every page.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat">
+              <summary>Performance<span class="n">11 checks</span></summary>
+              <dl>
+                <dt>perf/ttfb</dt>
+                <dd>
+                  Server responds quickly (TTFB ≤ 600 ms)<small
+                    >A slow first byte delays everything else, including Largest
+                    Contentful Paint.</small
+                  >
+                </dd>
+                <dt>perf/html-size</dt>
+                <dd>
+                  HTML document is lean (&lt; 100 KB)<small
+                    >Large HTML delays parsing and first render.</small
+                  >
+                </dd>
+                <dt>perf/compression</dt>
+                <dd>
+                  HTML is served compressed (gzip/brotli/zstd)<small
+                    >Compression typically cuts text transfer by 70% or
+                    more.</small
+                  >
+                </dd>
+                <dt>perf/redirects</dt>
+                <dd>
+                  Page is reached without redirect chains<small
+                    >Each redirect adds a full round trip before content starts
+                    loading.</small
+                  >
+                </dd>
+                <dt>perf/render-blocking</dt>
+                <dd>
+                  Scripts in &lt;head&gt; are async, defer or modules<small
+                    >Synchronous scripts block HTML parsing and delay first
+                    paint.</small
+                  >
+                </dd>
+                <dt>perf/img-dimensions</dt>
+                <dd>
+                  Images declare width and height<small
+                    >Without dimensions the layout jumps when images load
+                    (Cumulative Layout Shift).</small
+                  >
+                </dd>
+                <dt>perf/img-lazy</dt>
+                <dd>
+                  Below-the-fold images are lazy-loaded<small
+                    >Lazy loading saves bandwidth and speeds up the initial
+                    render.</small
+                  >
+                </dd>
+                <dt>perf/img-format</dt>
+                <dd>
+                  Modern image formats (WebP/AVIF/SVG) are used<small
+                    >WebP and AVIF are often 25–50% smaller than
+                    JPEG/PNG.</small
+                  >
+                </dd>
+                <dt>perf/dom-size</dt>
+                <dd>
+                  DOM is reasonably small (&lt; 1500 elements)<small
+                    >Large DOMs slow down style calculation, layout and memory
+                    use.</small
+                  >
+                </dd>
+                <dt>perf/cache-headers</dt>
+                <dd>
+                  Static assets have cache headers<small
+                    >Without caching, repeat visits re-download every
+                    file.</small
+                  >
+                </dd>
+                <dt>perf/img-weight</dt>
+                <dd>
+                  Images are reasonably sized (&lt; 500 KB each)<small
+                    >Oversized images are the most common cause of slow
+                    pages.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat">
+              <summary>Security<span class="n">12 checks</span></summary>
+              <dl>
+                <dt>sec/https</dt>
+                <dd>
+                  Site is served over HTTPS and http:// redirects to it<small
+                    >HTTPS protects users and is required for many modern
+                    browser features.</small
+                  >
+                </dd>
+                <dt>sec/hsts</dt>
+                <dd>
+                  Strict-Transport-Security is set (max-age ≥ 6 months)<small
+                    >HSTS prevents downgrade attacks by forcing HTTPS.</small
+                  >
+                </dd>
+                <dt>sec/csp</dt>
+                <dd>
+                  Content-Security-Policy is set and avoids unsafe-inline<small
+                    >CSP is the strongest defence against cross-site
+                    scripting.</small
+                  >
+                </dd>
+                <dt>sec/nosniff</dt>
+                <dd>
+                  X-Content-Type-Options: nosniff is set<small
+                    >It stops browsers from MIME-sniffing responses into
+                    executable types.</small
+                  >
+                </dd>
+                <dt>sec/frame-protection</dt>
+                <dd>
+                  Clickjacking protection (frame-ancestors /
+                  X-Frame-Options)<small
+                    >It stops other sites from embedding your pages in invisible
+                    frames.</small
+                  >
+                </dd>
+                <dt>sec/referrer-policy</dt>
+                <dd>
+                  Referrer-Policy is set<small
+                    >It controls how much URL information leaks to other
+                    sites.</small
+                  >
+                </dd>
+                <dt>sec/permissions-policy</dt>
+                <dd>
+                  Permissions-Policy is set<small
+                    >It disables powerful features (camera, geolocation…) you
+                    don&#x27;t use.</small
+                  >
+                </dd>
+                <dt>sec/mixed-content</dt>
+                <dd>
+                  No http:// subresources on HTTPS pages<small
+                    >Browsers block or warn about mixed content, breaking images
+                    and scripts.</small
+                  >
+                </dd>
+                <dt>sec/sri</dt>
+                <dd>
+                  Third-party scripts and styles use Subresource Integrity<small
+                    >SRI ensures a compromised CDN can&#x27;t inject malicious
+                    code into your page.</small
+                  >
+                </dd>
+                <dt>sec/target-blank</dt>
+                <dd>
+                  target=&quot;_blank&quot; links use
+                  rel=&quot;noopener&quot;<small
+                    >Older browsers give the opened page access to
+                    window.opener.</small
+                  >
+                </dd>
+                <dt>sec/cookies</dt>
+                <dd>
+                  Cookies set Secure, HttpOnly and SameSite<small
+                    >These flags protect session cookies from theft and
+                    CSRF.</small
+                  >
+                </dd>
+                <dt>sec/server-header</dt>
+                <dd>
+                  Server headers don&#x27;t reveal software versions<small
+                    >Version banners help attackers target known
+                    vulnerabilities.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat">
+              <summary>
+                Site files &amp; icons<span class="n">7 checks</span>
+              </summary>
+              <dl>
+                <dt>assets/favicon</dt>
+                <dd>
+                  Favicon is declared and reachable<small
+                    >A missing favicon shows a blank tab icon and fills server
+                    logs with 404s.</small
+                  >
+                </dd>
+                <dt>assets/apple-touch-icon</dt>
+                <dd>
+                  Apple touch icon (180×180) is available<small
+                    >It is used when people add your site to the iOS home
+                    screen.</small
+                  >
+                </dd>
+                <dt>assets/manifest</dt>
+                <dd>
+                  Web app manifest is valid (name, 192/512 icons)<small
+                    >It is needed for installable PWAs and good Android
+                    home-screen icons.</small
+                  >
+                </dd>
+                <dt>assets/theme-color</dt>
+                <dd>
+                  theme-color meta tag is set<small
+                    >It tints the browser UI on mobile to match your
+                    brand.</small
+                  >
+                </dd>
+                <dt>assets/robots-txt</dt>
+                <dd>
+                  robots.txt exists and doesn&#x27;t block everything<small
+                    >A leftover “Disallow: /” from staging removes the whole
+                    site from search.</small
+                  >
+                </dd>
+                <dt>assets/sitemap</dt>
+                <dd>
+                  sitemap.xml exists, is valid and lists production URLs<small
+                    >It helps crawlers discover pages; wrong hosts mean staging
+                    URLs get indexed.</small
+                  >
+                </dd>
+                <dt>assets/not-found-page</dt>
+                <dd>
+                  Unknown URLs return a real 404 status<small
+                    >Soft 404s (200 on missing pages) confuse search engines and
+                    monitoring.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat">
+              <summary>
+                Links &amp; resources<span class="n">5 checks</span>
+              </summary>
+              <dl>
+                <dt>links/internal</dt>
+                <dd>
+                  Internal links resolve without errors<small
+                    >Broken links hurt users and SEO.</small
+                  >
+                </dd>
+                <dt>links/external</dt>
+                <dd>
+                  External links are alive<small
+                    >Dead outbound links make a site look abandoned.</small
+                  >
+                </dd>
+                <dt>links/resources</dt>
+                <dd>
+                  Images, scripts and stylesheets load<small
+                    >A 404 resource means a broken layout or missing
+                    functionality.</small
+                  >
+                </dd>
+                <dt>links/anchors</dt>
+                <dd>
+                  #fragment links point to existing ids<small
+                    >Broken in-page anchors silently do nothing.</small
+                  >
+                </dd>
+                <dt>links/placeholder</dt>
+                <dd>
+                  No placeholder links (href=&quot;#&quot; or javascript:)<small
+                    >They aren&#x27;t real links: inaccessible, and they break
+                    middle-click and open-in-new-tab.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <details class="cat">
+              <summary>HTML hygiene<span class="n">5 checks</span></summary>
+              <dl>
+                <dt>html/status</dt>
+                <dd>
+                  Page responds with a 2xx status<small
+                    >Error pages are not indexed and usually indicate a broken
+                    deploy.</small
+                  >
+                </dd>
+                <dt>html/doctype</dt>
+                <dd>
+                  Document starts with &lt;!DOCTYPE html&gt;<small
+                    >Without it browsers fall into quirks mode with inconsistent
+                    rendering.</small
+                  >
+                </dd>
+                <dt>html/charset</dt>
+                <dd>
+                  Character encoding is declared as UTF-8<small
+                    >Otherwise special characters (ş, ğ, ü, é, emoji…) may
+                    render as garbage.</small
+                  >
+                </dd>
+                <dt>html/deprecated</dt>
+                <dd>
+                  No obsolete HTML elements<small
+                    >Tags like font, center and marquee are unsupported or
+                    discouraged.</small
+                  >
+                </dd>
+                <dt>html/meta-refresh</dt>
+                <dd>
+                  No &lt;meta http-equiv=&quot;refresh&quot;&gt; redirects<small
+                    >Meta refresh is slow and bad for accessibility and
+                    SEO.</small
+                  >
+                </dd>
+              </dl>
+            </details>
+            <!-- checks:end -->
+          </div>
+        </div>
+      </section>
+
+      <section id="ci" aria-labelledby="ci-h">
+        <div class="wrap split">
+          <div>
+            <h2 id="ci-h">Run it in CI</h2>
+          </div>
+          <div>
+            <p>
+              Fail the build when a preview deploy has errors, and put the
+              Markdown report on the job summary:
+            </p>
+            <pre class="code"><code>- name: Check the preview deploy
+  run: |
+    metaweave "$PREVIEW_URL" -f markdown --fail-on error | tee -a "$GITHUB_STEP_SUMMARY"</code></pre>
+            <p class="muted">
+              Use <code>-f json</code> when you want to post-process the
+              results. Each finding has an id, a severity, a message and a fix.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>metaweave is open source under the MIT license.</p>
+        <p>
+          <a href="https://github.com/nazimcanislam/metaweave" target="_blank">Source on GitHub</a>
+          <span>·</span>
+          <a href="https://github.com/nazimcanislam/metaweave/issues" target="_blank">Report an issue</a>
+        </p>
+      </div>
+    </footer>
+  </body>
 </html>

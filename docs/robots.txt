@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nazimcanislam.github.io/metaweave/sitemap.xml
