@@ -119,15 +119,21 @@ impl Out {
         message: impl Into<String>,
         details: Vec<String>,
     ) {
+        let fix = catalog::find(id).unwrap_or_else(|| panic!("unknown check id: {id}")).fix;
+        self.flag_with_fix(id, severity, message, details, fix);
+    }
+
+    /// Like `flag_with`, but with advice specific to this finding instead of the catalogue default.
+    pub fn flag_with_fix(
+        &mut self,
+        id: &'static str,
+        severity: Severity,
+        message: impl Into<String>,
+        details: Vec<String>,
+        fix: &'static str,
+    ) {
         let def = catalog::find(id).unwrap_or_else(|| panic!("unknown check id: {id}"));
-        self.findings.push(Finding {
-            id,
-            category: def.category,
-            severity,
-            message: message.into(),
-            details,
-            fix: def.fix,
-        });
+        self.findings.push(Finding { id, category: def.category, severity, message: message.into(), details, fix });
     }
 
     pub fn note(&mut self, text: impl Into<String>) {

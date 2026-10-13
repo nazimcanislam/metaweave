@@ -563,24 +563,38 @@ async fn links(n: &NetCtx<'_>) -> Out {
     // External links
     let external_targets: Vec<&Url> = link_targets.iter().filter(|u| !same_site(u, page)).collect();
     if !external_targets.is_empty() {
-        let (mut broken, mut blocked) = (Vec::new(), 0);
+        let (mut broken, mut blocked): (Vec<String>, Vec<String>) = (Vec::new(), Vec::new());
         for u in &external_targets {
             match state(u) {
                 Some(State::Broken(e)) => broken.push(format!("{} → {e}", truncate(u.as_str(), 80))),
-                Some(State::Blocked) => blocked += 1,
+                Some(State::Blocked) => {
+                    let mut why = map.get(u.as_str()).map(Probe::describe).unwrap_or_default();
+                    if why == "HTTP 999" {
+                        why.push_str(" (LinkedIn's anti-bot response; the link is usually fine)");
+                    }
+                    blocked.push(format!("{} → {why}", truncate(u.as_str(), 80)));
+                }
                 _ => {}
             }
         }
         let id = "links/external";
         if !broken.is_empty() {
             out.flag_with(id, Warning, format!("{} broken external link(s)", broken.len()), cap(broken, 10));
-        } else if blocked > 0 {
-            out.flag(
+        } else if !blocked.is_empty() {
+            let count = blocked.len();
+            let mut details = cap(blocked, 10);
+            details.push(
+                "Many sites (LinkedIn, Instagram, X…) refuse automated requests, so this does not prove the link is broken."
+                    .to_string(),
+            );
+            out.flag_with_fix(
                 id,
                 Info,
                 format!(
-                    "{blocked} external link(s) could not be verified (blocked or rate-limited by the remote server)"
+                    "{count} external link(s) could not be verified (blocked or rate-limited by the remote server)"
                 ),
+                details,
+                "Open the links in a browser; if they work, silence this with --ignore links/external.",
             );
         } else {
             out.ok(id);
