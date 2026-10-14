@@ -74,7 +74,7 @@ a:hover { text-decoration-thickness: 2px; }
 }
 .skip:focus { top: 1rem; }
 
-.wrap { width: min(72rem, 100% - 2.5rem); margin-inline: auto; }
+.wrap { max-width: 1200px; width: 100%; padding-inline: 16px; margin-inline: auto; }
 
 /* ── header ─────────────────────────────────────────── */
 .site-header {
@@ -98,7 +98,7 @@ a:hover { text-decoration-thickness: 2px; }
 .theme legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .theme input { position: absolute; opacity: 0; width: 1px; height: 1px; }
 .theme label {
-  padding: 0.3rem 0.75rem; font-size: 0.85rem; font-weight: 500; cursor: pointer;
+  padding: 0.3rem 0.75rem; font-size: clamp(0.75rem, 2.5vw, 0.85rem); font-weight: 500; cursor: pointer;
   color: var(--ink-soft); user-select: none;
 }
 .theme label:hover { color: var(--ink); }
@@ -163,7 +163,8 @@ pre.code {
   background: var(--code-bg); border: 1px solid var(--line); border-radius: 10px;
   padding: 1rem 1.2rem; overflow-x: auto; font: 0.88rem/1.6 var(--mono); margin: 0 0 1.25rem; max-width: 100%;
 }
-pre.code code { background: none; padding: 0; font-size: inherit; }
+.pre-code-holder { overflow-x: auto; }
+pre.code code { background: none; padding: 0; font-size: inherit; overflow-x: auto; width: 100%; }
 pre.code .c { color: var(--ink-soft); }
 
 .table-scroll { overflow-x: auto; margin: 0 0 1.5rem; }
@@ -200,7 +201,15 @@ footer p { margin: 0; }
 @media (max-width: 40rem) {
   .nav { display: none; }
   .theme { margin-left: auto; }
+  .cta { display: grid; text-align: center; }
 }
+
+@media (max-width: 400px) {
+  .brand span {
+    display: none;
+  }
+}
+
 @media print {
   .site-header, .skip { display: none; }
 }
